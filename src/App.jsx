@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SearchPage from './pages/SearchPage';
 import PlayerDetails from './pages/PlayerDetails';

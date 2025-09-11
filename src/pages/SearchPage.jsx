@@ -2,12 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import Papa from 'papaparse';
-import type { Player } from '../types';
 
 function SearchPage() {
   const [playerName, setPlayerName] = useState('');
-  const [players, setPlayers] = useState<Player[]>([]);
-  const [suggestions, setSuggestions] = useState<Player[]>([]);
+  const [players, setPlayers] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,7 +18,7 @@ function SearchPage() {
         Papa.parse(csvText, {
           header: true,
           complete: (results) => {
-            setPlayers(results.data as Player[]);
+            setPlayers(results.data);
           }
         });
       } catch (err) {
@@ -30,7 +29,7 @@ function SearchPage() {
     loadPlayers();
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e) => {
     const value = e.target.value;
     setPlayerName(value);
 
@@ -44,7 +43,7 @@ function SearchPage() {
     }
   };
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = (e) => {
     e.preventDefault();
     if (playerName.trim()) {
       const player = players.find(
@@ -56,7 +55,7 @@ function SearchPage() {
     }
   };
 
-  const handleSuggestionClick = (player: Player) => {
+  const handleSuggestionClick = (player) => {
     navigate(`/player/${encodeURIComponent(player.name)}`);
   };
 
@@ -87,19 +86,16 @@ function SearchPage() {
         />
         {suggestions.length > 0 && (
           <div className="max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-emerald-400 scrollbar-track-gray-800">
-
-{suggestions.map((player, index) => (
-
-            <button
-            key={index}
-            onClick={() => handleSuggestionClick(player)}
-            className="w-full px-6 py-3 text-left text-white hover:bg-emerald-400/20 transition-colors duration-200 flex items-center justify-between border-b border-emerald-400/20 last:border-b-0"
-
-            >
-            <span>{player.name}</span>
-            <span className="text-emerald-400 text-sm">{player.club}</span>
-            </button>
-          ))}
+            {suggestions.map((player, index) => (
+              <button
+                key={index}
+                onClick={() => handleSuggestionClick(player)}
+                className="w-full px-6 py-3 text-left text-white hover:bg-emerald-400/20 transition-colors duration-200 flex items-center justify-between border-b border-emerald-400/20 last:border-b-0"
+              >
+                <span>{player.name}</span>
+                <span className="text-emerald-400 text-sm">{player.club}</span>
+              </button>
+            ))}
           </div>
         )}
         </div>
